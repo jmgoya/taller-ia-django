@@ -1,13 +1,8 @@
 # Taller de IA — Repositorio base (Django + DRF)
 
-Este repositorio es el **punto de partida del Taller de IA** de Programación IV.
-Es un esqueleto de proyecto **Django + Django REST Framework** que ya arranca y
-funciona, pero que **no tiene lógica de negocio**: no hay modelos, serializers ni
-ViewSets. Esa parte la vas a generar vos con ayuda de una IA.
-
-La estructura y las convenciones son las mismas que usamos en las clases para
-construir **TaskFlow** (gestión colaborativa de proyectos y tareas), así que lo
-que generes debería verse igual a lo que vimos en clase.
+Este repositorio es el **punto de partida del Taller de IA** de Programación IV:
+un proyecto **Django + Django REST Framework** ya inicializado y funcionando,
+con la estructura de carpetas lista y sin lógica de negocio.
 
 ## Stack
 
@@ -28,24 +23,26 @@ que generes debería verse igual a lo que vimos en clase.
 │   ├── urls.py             # Router de DRF + /api/health/ + /api/token/
 │   ├── views.py            # Vista del health check
 │   ├── asgi.py / wsgi.py
-├── core/                   # App principal (acá trabaja la IA)
-│   ├── models.py           # Modelos del dominio
-│   ├── serializers.py      # ModelSerializer de cada modelo
-│   ├── views.py            # ModelViewSet de cada modelo
-│   ├── urls.py             # Rutas extra que no son ViewSets
+├── core/                   # App principal
+│   ├── models.py           # Modelos
+│   ├── serializers.py      # Serializers
+│   ├── views.py            # Vistas
+│   ├── urls.py             # Rutas de la app
 │   ├── admin.py            # Registro en el admin
 │   ├── permissions.py      # Permisos personalizados
 │   ├── services.py         # Lógica de negocio
-│   ├── repositories.py     # Consultas al ORM reutilizables
-│   ├── exceptions.py       # Manejador de excepciones centralizado
-│   └── tests.py            # Tests de la API
+│   ├── repositories.py     # Acceso a datos
+│   └── tests.py            # Tests
 ├── .env.example            # Variables de entorno necesarias (sin valores)
-├── PROMPT_PARA_LA_IA.md    # Prompt de ejemplo para pasarle a la IA
+├── PROMPT_PARA_LA_IA.md    # Contexto del proyecto para la IA
 ├── manage.py
 └── requirements.txt
 ```
 
 Cada archivo de `core/` tiene un comentario de encabezado que indica qué va ahí.
+
+`PROMPT_PARA_LA_IA.md` describe el stack y la estructura del proyecto para que
+la herramienta de IA sepa en qué tipo de proyecto está trabajando.
 
 ## Cómo levantarlo
 
@@ -62,21 +59,14 @@ source venv/bin/activate        # Linux / macOS
 # 3. Instalar dependencias
 pip install -r requirements.txt
 
-# 4. Crear el archivo .env a partir del ejemplo y completarlo
-cp .env.example .env
-#   SECRET_KEY=<una clave larga y aleatoria>
-#   DEBUG=True
-#   ALLOWED_HOSTS=localhost,127.0.0.1
-#   Podés generar una SECRET_KEY con:
-#   python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"
-
-# 5. Aplicar migraciones y levantar el servidor
+# 4. Aplicar migraciones y levantar el servidor
 python manage.py migrate
 python manage.py runserver
 ```
 
-> **Importante:** el archivo `.env` contiene secretos y **no se commitea**
-> (está en `.gitignore`). Solo se versiona `.env.example`.
+> No hace falta crear un `.env`: sin él, el proyecto arranca con una clave de
+> desarrollo y `DEBUG=True`. Si querés usar tus propios valores, copiá
+> `.env.example` como `.env` y completalo. El `.env` **no se commitea**.
 
 ### Verificar que funciona
 
@@ -92,21 +82,10 @@ curl http://127.0.0.1:8000/api/health/
 | GET    | `/api/health/`         | Chequeo de que el entorno arrancó         | Pública   |
 | POST   | `/api/token/`          | Obtener `access` y `refresh` (JWT)        | Pública   |
 | POST   | `/api/token/refresh/`  | Renovar el `access` token                 | Pública   |
-| GET    | `/api/`                | Raíz del router de DRF (vacía por ahora)  | JWT       |
+| GET    | `/api/`                | Raíz del router de DRF (vacía por ahora)  | Pública   |
 | —      | `/admin/`              | Panel de administración de Django         | Sesión    |
 
-Para obtener un token necesitás un usuario: `python manage.py createsuperuser`.
-Después usás el token en el header: `Authorization: Bearer <access>`.
-
-## ¿Qué vas a hacer en el taller?
-
-1. Elegí un dominio de datos (puede ser TaskFlow u otro tema: biblioteca,
-   turnos médicos, inventario, etc.).
-2. Abrí [`PROMPT_PARA_LA_IA.md`](PROMPT_PARA_LA_IA.md), completá los
-   placeholders con la descripción de tu dominio y pasáselo a tu herramienta de IA.
-3. La IA debe completar **dentro de esta estructura** los modelos, serializers,
-   ViewSets, permisos, el registro en el router y el admin.
-4. Revisá lo generado, corré `python manage.py makemigrations` y
-   `python manage.py migrate`, y probá los endpoints.
-5. Compará el resultado con las convenciones vistas en clase: ¿la IA respetó la
-   estructura? ¿Qué tuviste que corregir?
+Los endpoints son públicos por defecto (`AllowAny`). JWT está instalado y
+disponible: para obtener un token necesitás un usuario
+(`python manage.py createsuperuser`) y lo enviás en el header
+`Authorization: Bearer <access>`.

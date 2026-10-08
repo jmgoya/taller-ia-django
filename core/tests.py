@@ -1,1 +1,1 @@
-# Tests de la API (APITestCase): endpoints, permisos y validaciones.
+# Tests de la app.

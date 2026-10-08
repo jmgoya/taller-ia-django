@@ -1,3 +1,2 @@
-# Modelos del dominio (ej.: Project, Task, Tag) con sus relaciones
-# (ForeignKey, ManyToManyField), campos, choices, Meta y __str__.
+# Modelos de la app.
 from django.db import models

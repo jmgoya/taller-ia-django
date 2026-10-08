@@ -15,10 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from config.views import health
 
-# Router de DRF: registrá acá los ViewSets definidos en core/views.py.
-# Ejemplo:
-#   from core.views import ProjectViewSet
-#   router.register(r'projects', ProjectViewSet, basename='project')
+# Router de DRF (todavía sin rutas registradas).
 router = DefaultRouter()
 
 urlpatterns = [
