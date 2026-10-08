@@ -85,7 +85,26 @@ curl http://127.0.0.1:8000/api/health/
 | GET    | `/api/`                | Raíz del router de DRF (vacía por ahora)  | Pública   |
 | —      | `/admin/`              | Panel de administración de Django         | Sesión    |
 
-Los endpoints son públicos por defecto (`AllowAny`). JWT está instalado y
+### API de la universidad (materias y alumnos)
+
+| Método                 | Ruta                                   | Descripción                                   |
+|------------------------|----------------------------------------|-----------------------------------------------|
+| GET/POST               | `/api/alumnos/`                        | Listar / crear alumnos                        |
+| GET/PUT/PATCH/DELETE   | `/api/alumnos/{id}/`                   | Detalle / editar / borrar alumno              |
+| GET                    | `/api/alumnos/{id}/inscripciones/`     | Historial académico (`?estado=`)              |
+| GET/POST               | `/api/materias/`                       | Listar / crear materias (con correlativas)    |
+| GET/PUT/PATCH/DELETE   | `/api/materias/{id}/`                  | Detalle / editar / borrar materia             |
+| GET                    | `/api/materias/{id}/inscripciones/`    | Alumnos inscriptos (`?estado=`)               |
+| GET/POST               | `/api/inscripciones/`                  | Listar / inscribir alumno en materia          |
+| POST                   | `/api/inscripciones/{id}/calificar/`   | Cargar nota (`{"nota": 1..10}`)               |
+| POST                   | `/api/inscripciones/{id}/baja/`        | Dar de baja la cursada                        |
+
+Lectura pública; escritura solo para usuarios **staff** con JWT. Al inscribir se
+valida: alumno y materia activos, sin inscripción vigente, correlativas
+aprobadas (nota ≥ 4) y cupo disponible. Los listados soportan `?search=`,
+`?ordering=`, `?page=` y filtros (`?activo=`, `?anio=`, `?cuatrimestre=`, `?estado=`…).
+
+Los endpoints de base (health, token) son públicos (`AllowAny`). JWT está instalado y
 disponible: para obtener un token necesitás un usuario
 (`python manage.py createsuperuser`) y lo enviás en el header
 `Authorization: Bearer <access>`.
